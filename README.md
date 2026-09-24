@@ -1,4 +1,4 @@
-# Insider Directory Intelligence
+# The Niche Layer 
 
 A concept project by Oluwatoyin Afolabi, built after seeing Topicals launch the Insiders directory in Discord.
 
