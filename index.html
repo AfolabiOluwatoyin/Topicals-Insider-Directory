@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Insider Directory Intelligence — a Topicals concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF7F1; --ink:#1D1912; --coral:#FF5C7A; --lime:#C7F04A;
+    --lavender:#E4DBFB; --line:#E7DFD2; --muted:#7A7263;
+    --card:#FFFFFF;
+  }
+  :root:not([data-theme="light"]) { }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#17140F; --ink:#F3EEE3; --card:#221E17; --line:#3A3427; --muted:#B3A996;
+      --lavender:#332B57;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#17140F; --ink:#F3EEE3; --card:#221E17; --line:#3A3427; --muted:#B3A996;
+    --lavender:#332B57;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; line-height:1.5;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:48px 24px 80px;}
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:700; margin:0 0 8px;}
+  h1{font-size:clamp(28px,5vw,42px); line-height:1.08; max-width:14ch;}
+  .lede{max-width:56ch; color:var(--muted); font-size:16px; margin:18px 0 0;}
+  .tag-pill{display:inline-block; padding:2px 10px; border-radius:99px; font-size:12px; font-weight:600;}
+  header .tag-pill{background:var(--lime); color:#1D1912; margin-bottom:18px;}
+
+  .split{display:grid; grid-template-columns:1fr; gap:20px; margin:48px 0;}
+  @media(min-width:820px){ .split{grid-template-columns:1fr 1fr;} }
+  .panel{border:1px solid var(--line); border-radius:14px; padding:22px; background:var(--card);}
+  .panel h3{font-size:15px; text-transform:none; margin-bottom:14px;}
+  .panel.before{opacity:.85;}
+  .raw-field{font-size:13px; color:var(--muted); margin-bottom:6px;}
+  .raw-blob{font-size:14px; border:1px dashed var(--line); border-radius:8px; padding:12px; margin-top:4px;}
+  .fail{margin-top:16px; font-size:13px; color:var(--coral); font-weight:600;}
+  .win{margin-top:16px; font-size:13px; font-weight:600;}
+  .chip{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:99px; padding:4px 11px; font-size:12.5px; margin:0 6px 6px 0; background:var(--paper);}
+  .chip b{width:8px; height:8px; border-radius:50%; display:inline-block; background:var(--coral);}
+
+  .controls{display:flex; flex-wrap:wrap; gap:10px; margin:36px 0 22px; align-items:center;}
+  .controls input, .controls select{
+    font-family:'Inter'; font-size:14px; padding:9px 12px; border-radius:9px;
+    border:1px solid var(--line); background:var(--card); color:var(--ink);
+  }
+  .niche-filters{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:26px;}
+  .niche-btn{
+    font-family:'Inter'; font-size:13px; font-weight:600; padding:7px 14px; border-radius:99px;
+    border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer;
+  }
+  .niche-btn.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .count{font-size:13px; color:var(--muted); margin-bottom:16px;}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px;}
+  .card{border:1px solid var(--line); border-radius:14px; padding:16px; background:var(--card);}
+  .card .name{font-weight:600; font-size:15px;}
+  .card .loc{font-size:12.5px; color:var(--muted); margin-bottom:10px;}
+  .card .tags{display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;}
+  .tagchip{font-size:11px; font-weight:600; padding:3px 9px; border-radius:99px; background:var(--lavender);}
+  .tagchip.crossover{background:var(--coral); color:#fff;}
+  .meta{font-size:12px; color:var(--muted); display:flex; gap:10px; flex-wrap:wrap;}
+  footer{margin-top:56px; padding-top:24px; border-top:1px solid var(--line); font-size:13px; color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="tag-pill">Concept build, synthetic data only</span>
+    <h1>What the Insider Directory could see, once it's tagged</h1>
+    <p class="lede">The new Insiders directory collects one open text field for content style. That's rich, honest, and completely unsearchable at scale. Below is a working example of turning those answers into a directory you can actually filter, using invented sample profiles, not real community members.</p>
+  </header>
+
+  <section class="split">
+    <div class="panel before">
+      <h3>Today's form: one open answer</h3>
+      <div class="raw-field">Tell us about your content style</div>
+      <div class="raw-blob" id="rawBlob"></div>
+      <div class="fail">Search "fashion" across responses like this → nothing comes back reliably.</div>
+    </div>
+    <div class="panel">
+      <h3>Tagged from that same answer</h3>
+      <div id="tagDemo"></div>
+      <div class="win">Search "fashion" here → instant, exact matches, including crossover creators the form currently has no field for.</div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <input id="search" type="text" placeholder="Search location or concern…">
+    <select id="openness">
+      <option value="">Open to paid content: any</option>
+      <option value="Yes">Yes</option>
+      <option value="Maybe">Maybe</option>
+      <option value="No">No</option>
+    </select>
+  </div>
+  <div class="niche-filters" id="nicheFilters"></div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    Concept project by Oluwatoyin Afolabi &middot; built after seeing the Insiders directory launch in Discord &middot; all names and profiles below are invented for demonstration only.
+  </footer>
+</div>
+
+<script>
+const FIRST=["Amara","Jade","Simone","Chidinma","Priya","Lena","Marisol","Tobi","Zora","Nia","Camille","Deja","Fola","Ines","Ravi","Skyler","Toni","Yuki","Bianca","Noor","Kiara","Layla","Rosa","Mei","Aaliyah","Teni","Sasha","Odalys","Wren","Kemi"];
+const LAST=["O.","R.","B.","D.","K.","M.","T.","V.","S.","L."];
+const CITIES=[["Brooklyn","NY"],["Newark","NJ"],["Atlanta","GA"],["Houston","TX"],["Los Angeles","CA"],["Chicago","IL"],["Toronto","ON"],["London","UK"],["Philadelphia","PA"],["Miami","FL"],["Bronx","NY"],["Jersey City","NJ"],["Detroit","MI"],["Lagos","NG"],["Washington","DC"]];
+const CONCERNS=["Dark spots / hyperpigmentation","Texture / visible bumps","Acne","Eczema","Sensitivity","Dryness"];
+const SELF=["Passionate about skincare","I talk openly about skin conditions","I'm a go-to voice / tastemaker","Love creating content"];
+const CONTENT_LINES=[
+ "I mix thrifted fashion looks with my skincare routine, styling outfits around how my skin is feeling that week",
+ "Mostly GRWM videos, product reviews, and skin updates, very casual and diary style",
+ "Fashion first, I do styling and lookbooks, skincare comes up when I talk about prepping skin for shoots",
+ "I post acne journey updates, ingredient breakdowns and honest reviews, no filter content",
+ "Outfit of the day content with a skincare and self care thread running through it, my two passions collide",
+ "Wellness and routine content, morning and night skin rituals, slow living aesthetic",
+ "I cover both style and skin, fit checks paired with what's in my skincare rotation that month",
+ "Tutorials, makeup and skin prep, glam focused content for events",
+ "Personal essays about my skin journey mixed with thrifting and vintage fashion finds",
+ "Community events recaps, hosting meetups, lifestyle vlogging",
+ "Pure ingredient talk, ph levels, actives, very science leaning skincare content",
+ "Street style photography with a skincare tie in captions, fashion is the main character",
+ "Day in my life content, skin concerns woven in naturally alongside outfit posts",
+ "Product hauls and unboxings, beauty and skincare combined",
+ "I talk about eczema flare ups and how I dress to feel confident through it, fashion as coping"
+];
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function pickN(a,n){const s=[...a];const out=[];for(let i=0;i<n&&s.length;i++){out.push(s.splice(Math.floor(Math.random()*s.length),1)[0]);}return out;}
+
+function classify(text){
+  const t=text.toLowerCase();
+  const hasFashion=/fashion|outfit|style|thrift|lookbook|street style|fit check|vintage/.test(t);
+  const hasSkin=/skin|acne|eczema|ingredient|routine|actives|ph level/.test(t);
+  const hasWellness=/wellness|slow living|self care|ritual/.test(t);
+  const hasBeauty=/makeup|glam|tutorial|haul/.test(t);
+  const hasCommunity=/event|meetup|community|vlog/.test(t);
+  const tags=[];
+  if(hasFashion && hasSkin) tags.push("Fashion x Skincare Crossover");
+  else if(hasFashion) tags.push("Fashion");
+  if(hasSkin && !tags.includes("Fashion x Skincare Crossover")) tags.push("Skincare-Focused");
+  if(hasWellness) tags.push("Wellness");
+  if(hasBeauty) tags.push("Beauty/Makeup");
+  if(hasCommunity) tags.push("Community/Events");
+  if(tags.length===0) tags.push("Other");
+  return tags;
+}
+
+const PEOPLE=[];
+for(let i=0;i<30;i++){
+  const [city,region]=pick(CITIES);
+  const content=pick(CONTENT_LINES);
+  PEOPLE.push({
+    name: pick(FIRST)+" "+pick(LAST),
+    location: city+", "+region,
+    concerns: pickN(CONCERNS,1+Math.floor(Math.random()*2)),
+    self: pick(SELF),
+    content,
+    tags: classify(content),
+    paid: pick(["Yes","Yes","Maybe","No"]),
+    events: pick(["Yes","Maybe","No"])
+  });
+}
+
+document.getElementById("rawBlob").textContent =
+  PEOPLE.find(p=>p.tags.includes("Fashion x Skincare Crossover")).content;
+
+const demoP = PEOPLE.find(p=>p.tags.includes("Fashion x Skincare Crossover"));
+document.getElementById("tagDemo").innerHTML =
+  demoP.tags.map(t=>`<span class="chip"><b></b>${t}</span>`).join(" ") +
+  `<div style="margin-top:10px;font-size:13px;color:var(--muted)">${demoP.name} · ${demoP.location}</div>`;
+
+const ALL_TAGS=["All",...new Set(PEOPLE.flatMap(p=>p.tags))];
+let activeTag="All";
+
+const nicheEl=document.getElementById("nicheFilters");
+ALL_TAGS.forEach(tag=>{
+  const b=document.createElement("button");
+  b.className="niche-btn"+(tag==="All"?" active":"");
+  b.textContent=tag;
+  b.onclick=()=>{activeTag=tag; document.querySelectorAll(".niche-btn").forEach(x=>x.classList.remove("active")); b.classList.add("active"); render();};
+  nicheEl.appendChild(b);
+});
+
+function render(){
+  const q=document.getElementById("search").value.toLowerCase();
+  const paidFilter=document.getElementById("openness").value;
+  const filtered=PEOPLE.filter(p=>{
+    const matchesTag = activeTag==="All" || p.tags.includes(activeTag);
+    const matchesQ = !q || p.location.toLowerCase().includes(q) || p.concerns.join(" ").toLowerCase().includes(q);
+    const matchesPaid = !paidFilter || p.paid===paidFilter;
+    return matchesTag && matchesQ && matchesPaid;
+  });
+  document.getElementById("count").textContent = filtered.length + " of " + PEOPLE.length + " insiders match";
+  document.getElementById("grid").innerHTML = filtered.map(p=>`
+    <div class="card">
+      <div class="name">${p.name}</div>
+      <div class="loc">${p.location}</div>
+      <div class="tags">${p.tags.map(t=>`<span class="tagchip${t==='Fashion x Skincare Crossover'?' crossover':''}">${t}</span>`).join("")}</div>
+      <div class="meta">
+        <span>Paid content: ${p.paid}</span>
+        <span>Hosting: ${p.events}</span>
+      </div>
+    </div>
+  `).join("");
+}
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("openness").addEventListener("change",render);
+render();
+</script>
+</body>
+</html>
